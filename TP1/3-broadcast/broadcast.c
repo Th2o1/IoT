@@ -4,16 +4,20 @@
 #include "net/nullnet/nullnet.h"
 #include <stdio.h>
 #include <string.h>
+#include <sys/log.h>
 
 #define BUFSIZE 256
 
+#define LOG_MODULE "Broadcast"
+#define LOG_LEVEL LOG_LEVEL_INFO
+
 // TODO1 création structure message
-typedef struct message_t {
-    uint8_t id;
-    char buf[BUFSIZE];
-} message;
+struct message {
+    uint8_t seq_num;
+    char text[BUFSIZE];
+} __attribute__((packed));;
  
-message m;
+struct message m;
 
 /*---------------------------------------------------------------------------*/
 PROCESS(broadcast_button_process, "Broadcast on Button Release");
@@ -25,17 +29,13 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src,
                     const linkaddr_t *dst)
 {
 
-    // TODO6 afficher la source ainsi que les informations contenues dans le
-    // message reçu
-    printf("Reçu : %s De :", (char*)data);
-    for (size_t i = 0; i < LINKADDR_SIZE; i++)
-    {
-        printf("%02x",src->u8[i]);
-    }
- 
-    
-
+    // display the source and the content of the received message
+    struct message *msg = (struct message *)data;
+    LOG_INFO("Message received: ");
+    LOG_INFO_LLADDR(src);
+    LOG_INFO_(" - Text: %s, Sequence: %d\n", msg->text, msg->seq_num);
 }
+
 
 PROCESS_THREAD(broadcast_button_process, ev, data)
 {
@@ -47,7 +47,7 @@ PROCESS_THREAD(broadcast_button_process, ev, data)
     printf("Processus de diffusion démarré, en attente du bouton.\n");
 
     // TODO2 créer le message à envoyer
-    strcpy(m.buf, "TEST");
+    strcpy(m.text, "TEST");
 
     while (1) {
         // TODO3 attendre un événement de type "relâchement de bouton"
@@ -62,11 +62,12 @@ PROCESS_THREAD(broadcast_button_process, ev, data)
       
             // TODO5 positionnez les variables associées à la couche nullnet
             nullnet_buf = (uint8_t*)&m;
-            nullnet_len = strlen(m.buf)+2;
+            nullnet_len = strlen(m.text)+2;
 
             // envoi du message
             NETSTACK_NETWORK.output(NULL);
-            printf("Message envoyé : %s (%d)\n", nullnet_buf, nullnet_len);
+            LOG_INFO_("Message sent: %s (%d)\n", m.text, m.seq_num);
+            msg.seq_num++;
         }
     }
 

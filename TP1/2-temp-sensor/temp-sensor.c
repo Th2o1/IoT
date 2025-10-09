@@ -1,5 +1,7 @@
-#include "../arch/platform/nrf52840/common/temperature-sensor.h"
+#include "temperature-sensor.h"
+#include "etimer.h"
 #include "contiki.h"
+#include "sys/log.h"
 #include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
@@ -9,19 +11,20 @@ AUTOSTART_PROCESSES(&read_temp_process);
 PROCESS_THREAD(read_temp_process, ev, data)
 {
     // TODO1 déclaration du temporisateur
-    static struct etimer t; 
-    
+    static struct etimer t;
+
     PROCESS_BEGIN();
 
     // TODO1 armement du temporisateur à 5 sec.
 
-    etimer_set(&t, 5*CLOCK_SECOND);
+    etimer_set(&t, 5 * CLOCK_SECOND);
 
     // TODO2 activer le capteur
 
     SENSORS_ACTIVATE(temperature_sensor);
 
-    while (1) {
+    while (1)
+    {
 
         // TODO1 attente passive jusqu'à l'expiration du temporisateur
         // puis affichage d'un message

@@ -3,3 +3,4 @@ build/
 command.md
 contiki-ng/
 contiki-ng
+compile_commands.json 

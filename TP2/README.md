@@ -53,19 +53,28 @@ Capture traffic and analyze 6LoWPAN compression.
    - Fix in **Tshark**: `-o "wpan.fcs_format:TI CC24xx metadata"`
    - Fix in **Wireshark**: `Edit > Preferences > Protocols > IEEE 802.15.4 > FCS format: TI CC24xx metadata`
 3. Analyze your trace and answer:
-   - **Which compression standard** is used by 6LoWPAN?
+   - **Which compression standard** is used by 6LoWPAN? On a 7e33 donc c'est IPHC
    - **How is the IPv6 header compressed?** Compute the **compression ratio** (IP layer only).
+   57,7%
+
    - **How is the UDP header compressed?** Compute the **overall compression ratio** (entire message).
+   with LOWPAN_NHC pour UDP
 4. **Improve compression**: adjust your configuration to increase the compression ratio. Explain and justify the changes. Capture a new trace (in each direction) to validate effectiveness.
+
+Make the port and dest compressed. Use Higly compressable : 0xF0B0 and 0xF0B1 -> it then became shorter because we have LOWPAN_NHC -> 11110011 so the src and dest port are on 4 bits 
 
 ---
 
 ### A.3) 6LoWPAN Fragmentation
 
-Increase the transmitted message size so it **exceeds the IEEE 802.15.4 MTU**.
+Increase the transmitted message size so it **exceeds the IEEE 802.15.4 MTU**. 
+127 bytes -> that create fragmentation. 
 
 **Work to do:**
 - Observe the changes in the **6LoWPAN headers** related to fragmentation.
+
+
+
 - Record a **complete trace** of sending one UDP datagram in this scenario (**one trace per direction**).
 
 ---

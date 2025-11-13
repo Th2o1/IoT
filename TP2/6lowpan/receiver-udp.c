@@ -9,8 +9,8 @@
 #define LOG_MODULE "UDP-RECV"
 #define LOG_LEVEL LOG_LEVEL_INFO
 
-#define PORT_SENDER 8765
-#define PORT_RECV 4321
+#define PORT_SENDER 61616
+#define PORT_RECV 61617
 #define BUFSIZE 256
 
 struct message

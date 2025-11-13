@@ -17,10 +17,9 @@
 #define LOG_LEVEL LOG_CONF_LEVEL_6LOWPAN
 #endif
 
-#define PORT_SENDER 8765
-#define PORT_RECV 4321
-
-#define BUFSIZE 64 // Reduce size - 256 is too large for typical UDP packets
+#define PORT_SENDER 61616
+#define PORT_RECV 61617
+#define BUFSIZE 128 // Reduce size - 256 is too large for typical UDP packets
 
 struct message
 {

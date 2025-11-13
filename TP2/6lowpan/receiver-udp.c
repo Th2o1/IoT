@@ -4,10 +4,21 @@
 #include <string.h>
 #include <stdio.h>
 #include "sys/log.h"
+#include <stdint.h>
 
-#define PORT_SENDER XXXX
-#define PORT_RECV XXXX
+#define LOG_MODULE "UDP-RECV"
+#define LOG_LEVEL LOG_LEVEL_INFO
 
+#define PORT_SENDER 8765
+#define PORT_RECV 4321
+#define BUFSIZE 256
+
+struct message
+{
+	uint8_t seq_num;
+	uint16_t temperature;
+	char text[BUFSIZE];
+} __attribute__((packed));
 
 /*---------------------------------------------------------------------------*/
 PROCESS(udp_receiver, "Receiver UDP");
@@ -15,20 +26,34 @@ AUTOSTART_PROCESSES(&udp_receiver);
 /*---------------------------------------------------------------------------*/
 // fonction de réception des messages
 void udp_rx_callback(struct simple_udp_connection *udp_con,
-		     const uip_ipaddr_t *src,
-		     uint16_t sport,
-		     const uip_ipaddr_t *dest,
-		     uint16_t dport,
-		     const uint8_t *data,
-		     uint16_t size)
+					 const uip_ipaddr_t *src,
+					 uint16_t sport,
+					 const uip_ipaddr_t *dest,
+					 uint16_t dport,
+					 const uint8_t *data,
+					 uint16_t size)
 {
-	
+	struct message *mess = (struct message *)data;
+	LOG_INFO("Received %u bytes from ", size);
+	LOG_INFO_6ADDR(src);
+	LOG_INFO_(", port %u -> ", sport);
+	LOG_INFO_6ADDR(dest);
+	LOG_INFO_(", port %u: '", dport);
+
+	LOG_INFO_("%d, %d, %s", mess->seq_num, mess->temperature, mess->text);
+
+	LOG_INFO_("'\n");
 }
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(udp_receiver, ev, data)
 {
 	PROCESS_BEGIN();
-
+	static struct simple_udp_connection udp_conn;
+	simple_udp_register(&udp_conn, PORT_RECV, NULL, PORT_SENDER, udp_rx_callback);
+	while (1)
+	{
+		PROCESS_YIELD();
+	}
 	PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/

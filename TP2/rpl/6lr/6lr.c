@@ -8,14 +8,13 @@
 #include "sys/log.h"
 #include "../arch/platform/nrf52840/common/temperature-sensor.h"
 
-
 /*---------------------------------------------------------------------------*/
 PROCESS(udp_sender, "Sender UDP");
 AUTOSTART_PROCESSES(&udp_sender);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(udp_sender, ev, data)
 {
-  PROCESS_BEGIN();  
+  PROCESS_BEGIN();
 
   PROCESS_END();
 }

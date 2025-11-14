@@ -73,8 +73,6 @@ Increase the transmitted message size so it **exceeds the IEEE 802.15.4 MTU**.
 **Work to do:**
 - Observe the changes in the **6LoWPAN headers** related to fragmentation.
 
-
-
 - Record a **complete trace** of sending one UDP datagram in this scenario (**one trace per direction**).
 
 ---
